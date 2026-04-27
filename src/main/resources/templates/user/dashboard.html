@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"
+	th:replace="~{base::parent(~{::#content},~{::title},~{::script})}">
+<head>
+<title data-th-text="${loginUser.name}+' ' + '| Dashboard'">Dashboard
+	Page</title>
+</head>
+<body>
+	<div id="content">
+
+
+		<div th:if="${loginUser}">
+			<div th:replace="~{user/sidebar::sidebar}"></div>
+		</div>
+		<div class="pl-64 pt-10">
+			<h1>Welcome Dashboard Page</h1>
+		</div>
+	</div>
+
+</body>
+
+<script>
+	console.log("Profile Page");
+</script>
+</html>
