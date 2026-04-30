@@ -20,10 +20,11 @@ pipeline {
             }
         }
 
-        stage('Run') {
-            steps {
-                bat 'java -jar target\\*.jar'
-            }
-        }
+       stage('Run') {
+    steps {
+        bat 'dir target'
+        bat 'java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar'
+    }
+}
     }
 }
