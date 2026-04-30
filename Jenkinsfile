@@ -2,21 +2,27 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/swaruphajare3/SCM-2.0.git'
+            }
+        }
+
         stage('Build') {
             steps {
-                bat 'echo Building project...'
+                bat 'mvn clean install'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'echo Running tests...'
+                bat 'mvn test'
             }
         }
 
-        stage('Deploy') {
+        stage('Run') {
             steps {
-                bat 'echo Deploying app...'
+                bat 'java -jar target\\*.jar'
             }
         }
     }
