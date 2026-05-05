@@ -9,40 +9,28 @@ pipeline {
             }
         }
 
-        stage('Stop Old App') {
-            steps {
-                bat '''
-                echo Stopping app running on port 8081...
-
-                for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8081') do (
-                    echo Killing process %%a
-                    taskkill /F /PID %%a
-                )
-
-                echo Done stopping old app
-                '''
-            }
-        }
-
         stage('Build & Test') {
             steps {
                 bat 'mvn clean verify'
             }
         }
 
-        stage('Archive') {
+        stage('Stop Old App') {
             steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                bat '''
+                echo Stopping old application if running...
+                taskkill /F /IM java.exe /T || echo No running app
+                '''
             }
         }
 
-       stage('Run App') {
-    steps {
-        bat '''
-        echo Starting app in foreground...
-        java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar
-        '''
-    }
-}
+        stage('Run App') {
+            steps {
+                bat '''
+                echo Starting app in background...
+                start /B java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar
+                '''
+            }
+        }
     }
 }
