@@ -15,9 +15,15 @@ pipeline {
             }
         }
 
-        stage('Package') {
+        stage('Archive') {
             steps {
-                bat 'dir target'
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+
+        stage('Run App') {
+            steps {
+                bat 'start /B java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar'
             }
         }
     }
