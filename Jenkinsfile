@@ -23,7 +23,13 @@ pipeline {
 
         stage('Run App') {
             steps {
-                bat 'start /B java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar'
+                bat '''
+                echo Stopping old application if running...
+                taskkill /F /IM java.exe /T || echo No running app
+
+                echo Starting new application...
+                start /B java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar
+                '''
             }
         }
     }
