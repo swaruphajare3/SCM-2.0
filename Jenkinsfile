@@ -12,8 +12,14 @@ pipeline {
         stage('Stop Old App') {
             steps {
                 bat '''
-                echo Stopping old application if running...
-                taskkill /F /IM java.exe /T || echo No running app
+                echo Stopping app running on port 8081...
+
+                for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8081') do (
+                    echo Killing process %%a
+                    taskkill /F /PID %%a
+                )
+
+                echo Done stopping old app
                 '''
             }
         }
