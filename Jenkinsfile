@@ -36,13 +36,13 @@ pipeline {
             }
         }
 
-        stage('Run App') {
-            steps {
-                bat '''
-                echo Starting new application...
-                start /B java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar
-                '''
-            }
-        }
+       stage('Run App') {
+    steps {
+        bat '''
+        echo Starting app in foreground...
+        java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar
+        '''
+    }
+}
     }
 }
