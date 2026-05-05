@@ -19,7 +19,7 @@ pipeline {
             steps {
                 bat '''
                 echo Stopping old application if running...
-                taskkill /F /IM java.exe /T || echo No running app
+               taskkill /F /FI "WINDOWTITLE eq java*" || echo No app found
                 '''
             }
         }
