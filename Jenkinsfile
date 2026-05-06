@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = "scm-app"
-        CONTAINER_NAME = "scm-container"
-    }
-
     stages {
 
         stage('Checkout') {
@@ -14,11 +9,10 @@ pipeline {
             }
         }
 
-        stage('Kill Running App') {
+        stage('Stop Old Containers') {
             steps {
                 bat '''
-                taskkill /F /IM java.exe /T || echo No java process
-                docker rm -f %CONTAINER_NAME% || echo No container
+                docker-compose down || echo No containers running
                 '''
             }
         }
@@ -29,16 +23,10 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                bat 'docker build -t %IMAGE_NAME% .'
-            }
-        }
-
-        stage('Run Container') {
+        stage('Run App with Docker Compose') {
             steps {
                 bat '''
-                docker run -d -p 8081:8080 --name %CONTAINER_NAME% %IMAGE_NAME%
+                docker-compose up -d --build
                 '''
             }
         }
