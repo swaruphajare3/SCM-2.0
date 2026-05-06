@@ -14,6 +14,15 @@ pipeline {
             }
         }
 
+        stage('Kill Running App') {
+            steps {
+                bat '''
+                taskkill /F /IM java.exe /T || echo No java process
+                docker rm -f %CONTAINER_NAME% || echo No container
+                '''
+            }
+        }
+
         stage('Build Jar') {
             steps {
                 bat 'mvn clean package -DskipTests'
@@ -23,12 +32,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t %IMAGE_NAME% .'
-            }
-        }
-
-        stage('Stop Old Container') {
-            steps {
-                bat 'docker rm -f %CONTAINER_NAME% || echo No container'
             }
         }
 
