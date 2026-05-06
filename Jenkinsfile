@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "scm-app"
+        CONTAINER_NAME = "scm-container"
+    }
+
     stages {
 
         stage('Checkout') {
@@ -9,32 +14,30 @@ pipeline {
             }
         }
 
-        stage('Build & Test') {
+        stage('Build Jar') {
             steps {
-                bat 'mvn clean verify'
+                bat 'mvn clean package -DskipTests'
             }
         }
 
-        stage('Stop Old App') {
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t %IMAGE_NAME% .'
+            }
+        }
+
+        stage('Stop Old Container') {
+            steps {
+                bat 'docker rm -f %CONTAINER_NAME% || echo No container'
+            }
+        }
+
+        stage('Run Container') {
             steps {
                 bat '''
-                echo Stopping old application if running...
-                taskkill /F /FI "WINDOWTITLE eq java*" || echo No app found
+                docker run -d -p 8081:8080 --name %CONTAINER_NAME% %IMAGE_NAME%
                 '''
             }
         }
-
-       stage('Run App') {
-    steps {
-        bat '''
-        echo Stopping old app...
-        taskkill /F /FI "WINDOWTITLE eq SCM_APP*" || echo No app
-
-        echo Starting app...
-        start "SCM_APP" /MIN cmd /k "java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar"
-        '''
-    }
-}
-
     }
 }
