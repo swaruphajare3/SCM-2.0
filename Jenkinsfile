@@ -24,17 +24,17 @@ pipeline {
             }
         }
 
-        stage('Run App') {
-            steps {
-                bat '''
-                echo Stopping old app...
-                taskkill /FI "WINDOWTITLE eq SCM_APP*" /F || echo No app
+       stage('Run App') {
+    steps {
+        bat '''
+        echo Stopping old app...
+        taskkill /F /FI "WINDOWTITLE eq SCM_APP*" || echo No app
 
-                echo Starting app in background...
-                start "SCM_APP" cmd /c "java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar > app.log 2>&1"
-                '''
-            }
-        }
+        echo Starting app...
+        start "SCM_APP" /MIN cmd /k "java -jar target\\scm2.0-0.0.1-SNAPSHOT.jar"
+        '''
+    }
+}
 
     }
 }
