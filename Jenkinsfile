@@ -9,25 +9,27 @@ pipeline {
             }
         }
 
-        stage('Stop Old Containers') {
-            steps {
-                bat '''
-                docker-compose down || echo No containers running
-                '''
-            }
-        }
-
         stage('Build Jar') {
             steps {
                 bat 'mvn clean package -DskipTests'
             }
         }
 
-        stage('Run App with Docker Compose') {
+        stage('Stop Old Containers') {
             steps {
-                bat '''
-                docker-compose up -d --build
-                '''
+                bat 'docker-compose down'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker-compose build'
+            }
+        }
+
+        stage('Start Containers') {
+            steps {
+                bat 'docker-compose up -d'
             }
         }
     }
