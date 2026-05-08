@@ -26,7 +26,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       SERVER_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/scm20
